@@ -87,8 +87,13 @@ if __name__ == "__main__":
     soup = BeautifulSoup(response.content, 'html.parser')
     file_links = [a['href'] for a in soup.find_all('a', href=True) if "File:" in a['href'] and '.ogg' in a['href']]
 
+    total_links = len(file_links)
+    print(f"Total items found: {total_links}.")
+
     # Loop over each "File:" link to navigate to the subpage and download the actual .ogg file
-    for file_link in file_links:
+    for link_index, file_link in enumerate(file_links, start=1):
+        print(f"Item {link_index} of {total_links}:")
+
         # If the link is relative, make it absolute
         if not file_link.startswith("http"):
             file_link = requests.compat.urljoin(main_page_url, file_link)
