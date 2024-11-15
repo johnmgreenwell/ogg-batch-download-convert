@@ -120,11 +120,9 @@ if __name__ == "__main__":
         # Proceed to download and convert if downloadable ogg file found
         # Add metadata if found or given
         if ogg_url:
-            #print(f"Found .ogg download link: {ogg_url}")
             output_file, skip_file = download_and_convert_ogg(ogg_url, output_directory)
             output_file_basename = os.path.basename(output_file)
             if not skip_file:
-                #print(f"Adding metadata to {output_file_basename}...")
                 try:
                     if os.path.isfile(output_file):
                         file_tag = music_tag.load_file(output_file)
