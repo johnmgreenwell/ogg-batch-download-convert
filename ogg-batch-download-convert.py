@@ -6,6 +6,8 @@ from bs4 import BeautifulSoup
 from urllib.parse import unquote
 from pydub import AudioSegment
 
+headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",}
+
 def convert_ogg_to_mp3(ogg_path, mp3_path):
     """Convert an ogg file to an mp3 file"""
     audio = AudioSegment.from_ogg(ogg_path)
@@ -44,7 +46,7 @@ def download_and_convert_ogg(ogg_url, folder='output'):
         print(f"Downloading {ogg_file_basename}...")
 
         # Download the ogg file
-        with requests.get(ogg_url, stream=True) as r:
+        with requests.get(ogg_url, stream=True, headers=headers) as r:
             r.raise_for_status()
             with open(local_filename_ogg, 'wb') as f:
                 for chunk in r.iter_content(chunk_size=8192):
@@ -89,7 +91,7 @@ if __name__ == "__main__":
     print(f"Thumbnail File: {thumbnail_file}")
 
     # Find all the links that contain "File:" in the href on the target URL page
-    response = requests.get(main_page_url)
+    response = requests.get(main_page_url, headers=headers)
     soup = BeautifulSoup(response.content, 'html.parser')
     file_links = [a['href'] for a in soup.find_all('a', href=True) if "File:" in a['href'] and '.ogg' in a['href']]
 
@@ -105,7 +107,7 @@ if __name__ == "__main__":
             file_link = requests.compat.urljoin(main_page_url, file_link)
 
         # Fetch the subpage containing the .ogg link
-        file_page_response = requests.get(file_link)
+        file_page_response = requests.get(file_link, headers=headers)
         file_page_soup = BeautifulSoup(file_page_response.content, 'html.parser')
         
         # Check for <audio> tag with a <source> or <audio> src
