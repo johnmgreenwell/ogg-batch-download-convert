@@ -82,6 +82,12 @@ if __name__ == "__main__":
     artist_name = (sys.argv[4] if (len(sys.argv) > 4) else None)
     thumbnail_file = (sys.argv[5] if (len(sys.argv) > 5) else None)
 
+    print(f"Target URL: {main_page_url}")
+    print(f"Output Directory: {output_directory}")
+    print(f"Album Name: {album_name}")
+    print(f"Artist Name: {artist_name}")
+    print(f"Thumbnail File: {thumbnail_file}")
+
     # Find all the links that contain "File:" in the href on the target URL page
     response = requests.get(main_page_url)
     soup = BeautifulSoup(response.content, 'html.parser')
