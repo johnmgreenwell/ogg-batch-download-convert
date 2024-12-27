@@ -16,7 +16,7 @@ The script is written for Python 3, and requires the following external librarie
   - pydub
   - music_tag
 
-It is also necessary that the programs 'ffmpeg' and 'ffprobe' be installed or accessible on the local path.
+It is also necessary that the programs 'ffmpeg' and 'ffprobe' be installed or accessible on the local path. On Linux systems, this requirement may be satisfied by installing the 'ffmpeg' package (e.g. `sudo apt install ffmpeg`).
 
 ## Usage
 
