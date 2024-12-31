@@ -84,11 +84,11 @@ if __name__ == "__main__":
     artist_name = (sys.argv[4] if (len(sys.argv) > 4) else None)
     thumbnail_file = (sys.argv[5] if (len(sys.argv) > 5) else None)
 
-    print(f"Target URL: {main_page_url}")
+    print(f"\nTarget URL: {main_page_url}\n")
     print(f"Output Directory: {output_directory}")
-    print(f"Album Name: {album_name}")
-    print(f"Artist Name: {artist_name}")
-    print(f"Thumbnail File: {thumbnail_file}")
+    print(f"Album Name: {'[Blank]' if (album_name is None) else album_name}")
+    print(f"Artist Name: {'[Blank]' if (artist_name is None) else artist_name}")
+    print(f"Thumbnail File: {'[Blank]' if (thumbnail_file is None) else thumbnail_file}\n")
 
     # Find all the links that contain "File:" in the href on the target URL page
     response = requests.get(main_page_url, headers=headers)
@@ -96,7 +96,7 @@ if __name__ == "__main__":
     file_links = [a['href'] for a in soup.find_all('a', href=True) if "File:" in a['href'] and '.ogg' in a['href']]
 
     total_links = len(file_links)
-    print(f"Total items found: {total_links}.")
+    print(f"Total items found: {total_links}.\n")
 
     # Loop over each "File:" link to navigate to the subpage and download the actual .ogg file
     for link_index, file_link in enumerate(file_links, start=1):
