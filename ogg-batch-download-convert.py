@@ -8,6 +8,20 @@ from pydub import AudioSegment
 
 headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",}
 
+def get_file_page_response(file_link):
+	# Download the ogg file, retrying on connection error as necessary
+    file_page_response = None
+    number_attempts = 10
+    for attempt in range(number_attempts):
+        try:
+            file_page_response = requests.get(file_link, headers=headers)
+            break
+        except Exception as e:
+            print(f"An error occurred fetching data: {e}")
+            print(f"Retrying... ({number_attempts - attempt - 1} of {number_attempts} attempts remaining)")
+            sleep(1)
+    return file_page_response
+
 def convert_ogg_to_mp3(ogg_path, mp3_path):
     """Convert an ogg file to an mp3 file"""
     audio = AudioSegment.from_ogg(ogg_path)
@@ -45,12 +59,23 @@ def download_and_convert_ogg(ogg_url, folder='output'):
     else:
         print(f"Downloading {ogg_file_basename}...")
 
-        # Download the ogg file
-        with requests.get(ogg_url, stream=True, headers=headers) as r:
-            r.raise_for_status()
-            with open(local_filename_ogg, 'wb') as f:
-                for chunk in r.iter_content(chunk_size=8192):
-                    f.write(chunk)
+        # Download the ogg file, retrying on connection error as necessary
+        number_attempts = 10
+        for attempt in range(number_attempts):
+            try:
+                with requests.get(ogg_url, stream=True, headers=headers) as r:
+                    r.raise_for_status()
+                    with open(local_filename_ogg, 'wb') as f:
+                        for chunk in r.iter_content(chunk_size=8192):
+                            f.write(chunk)
+                break
+            except Exception as e:
+                print(f"An error occurred fetching data: {e}")
+                if (number_attempts - attempt - 1) > 0:
+                    print(f"Retrying... ({number_attempts - attempt - 1} of {number_attempts} attempts remaining)")
+                    sleep(1)
+                else:
+                    sys.exit("Encountered connection error which could not be resolved.")
 
         # Skip encoding if already mp3
         if handle_as_mp3:
@@ -107,7 +132,9 @@ if __name__ == "__main__":
             file_link = requests.compat.urljoin(main_page_url, file_link)
 
         # Fetch the subpage containing the .ogg link
-        file_page_response = requests.get(file_link, headers=headers)
+        file_page_response = get_file_page_response(file_link)
+        if not file_page_response:
+            sys.exit("Encountered connection error which could not be resolved.")
         file_page_soup = BeautifulSoup(file_page_response.content, 'html.parser')
         
         # Check for <audio> tag with a <source> or <audio> src
