@@ -9,6 +9,7 @@ Usage: python ogg-batch-download-convert.py [target_url] <output_directory> <alb
 """
 import os
 import sys
+import time
 import requests
 import music_tag
 from bs4 import BeautifulSoup
@@ -31,7 +32,7 @@ def get_file_page_response(file_link):
         except Exception as e:
             print(f"An error occurred fetching data: {e}")
             print(f"Retrying... ({number_attempts - attempt - 1} of {number_attempts} attempts remaining)")
-            sleep(1)
+            time.sleep(1)
     return file_page_response
 
 def convert_ogg_to_mp3(ogg_path, mp3_path):
@@ -89,7 +90,7 @@ def download_and_convert_ogg(ogg_url, folder='output'):
                 print(f"An error occurred fetching data: {e}")
                 if (number_attempts - attempt - 1) > 0:
                     print(f"Retrying... ({number_attempts - attempt - 1} of {number_attempts} attempts remaining)")
-                    sleep(1)
+                    time.sleep(1)
                 else:
                     sys.exit("Encountered connection error which could not be resolved.")
 
