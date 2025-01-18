@@ -1,3 +1,12 @@
+"""\
+Ogg File Batch Download and Convert
+
+This Python script is designed to parse a webpage containing a list of .ogg audio files,
+each behind its own subpage from the list. The .ogg files are subsequently converted to 
+a .mp3 file, with optional metadata supplied as inputs to the script.
+
+Usage: python ogg-batch-download-convert.py [target_url] <output_directory> <album_name> <artist_name> <thumbnail_file>
+"""
 import os
 import sys
 import requests
@@ -9,7 +18,10 @@ from pydub import AudioSegment
 headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",}
 
 def get_file_page_response(file_link):
-	# Download the ogg file, retrying on connection error as necessary
+    """Perform a page request, retrying on connection error as necessary
+    :param file_link: Subpage expected to contain an ogg file download link
+    :return: The requests response as fetched from the file link
+    """
     file_page_response = None
     number_attempts = 10
     for attempt in range(number_attempts):
@@ -23,7 +35,10 @@ def get_file_page_response(file_link):
     return file_page_response
 
 def convert_ogg_to_mp3(ogg_path, mp3_path):
-    """Convert an ogg file to an mp3 file"""
+    """Convert an ogg file to an mp3 file
+    :param ogg_path: Path/filename of ogg file to convert
+    :param mp3_path: Path/filename of mp3 file to be created
+    """
     audio = AudioSegment.from_ogg(ogg_path)
     audio.export(mp3_path, format="mp3")
 
@@ -31,7 +46,8 @@ def download_and_convert_ogg(ogg_url, folder='output'):
     """Download an ogg file given its url,
     convert to mp3, and save it in output directory.
     Duplicates are deliberately skipped.
-    Returns output_filname, skip_file
+    :param ogg_url: The URL of the ogg file to download
+    :param folder: The output directory to which the file should be downloaded
     """
     if not os.path.exists(folder):
         os.makedirs(folder)
