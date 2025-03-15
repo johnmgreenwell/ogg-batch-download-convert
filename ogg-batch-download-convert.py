@@ -80,11 +80,11 @@ def download_and_convert_ogg(ogg_url, folder='output'):
         number_attempts = 10
         for attempt in range(number_attempts):
             try:
-                with requests.get(ogg_url, stream=True, headers=headers) as r:
-                    r.raise_for_status()
-                    with open(local_filename_ogg, 'wb') as f:
+                with requests.get(ogg_url, stream=True, headers=headers) as response:
+                    response.raise_for_status()
+                    with open(local_filename_ogg, 'wb') as file:
                         for chunk in r.iter_content(chunk_size=8192):
-                            f.write(chunk)
+                            file.write(chunk)
                 break
             except Exception as e:
                 print(f"An error occurred fetching data: {e}")
