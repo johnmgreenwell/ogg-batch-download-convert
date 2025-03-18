@@ -112,13 +112,10 @@ def download_and_convert_ogg(ogg_url, folder='output'):
 
     return local_filename_mp3, False
 
-if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        # URL of the main page containing links to the individual pages with "File:" links
-        main_page_url = sys.argv[1]
-    else:
-        # URL is needed; quit if not supplied
-        sys.exit("Requires one input url from which to download .ogg files for conversion.")
+if __name__ == "__main__":    
+    # URL is needed; quit if not supplied
+    if len(sys.argv) < 2: sys.exit("Requires one input url from which to download .ogg files for conversion.")
+    main_page_url = sys.argv[1]
 
     # Allow for optional output directory name
     output_directory = (sys.argv[2] if (len(sys.argv) > 2) else 'output')
