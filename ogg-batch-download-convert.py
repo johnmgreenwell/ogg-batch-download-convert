@@ -83,7 +83,7 @@ def download_and_convert_ogg(ogg_url, folder='output'):
                 with requests.get(ogg_url, stream=True, headers=headers) as response:
                     response.raise_for_status()
                     with open(local_filename_ogg, 'wb') as file:
-                        for chunk in r.iter_content(chunk_size=8192):
+                        for chunk in response.iter_content(chunk_size=8192):
                             file.write(chunk)
                 break
             except Exception as e:
